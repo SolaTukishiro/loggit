@@ -26,12 +26,14 @@ return new class extends Migration
             $table->index(['user_id', 'started_at']);
         });
 
-        // CHECK制約（ended_atはstarted_atより後）
-        DB::statement(
-            'ALTER TABLE activity_logs
-             ADD CONSTRAINT chk_ended_after_started
-             CHECK (ended_at IS NULL OR ended_at > started_at)'
-        );
+        // SQLite does not support ADD CONSTRAINT via ALTER TABLE.
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement(
+                'ALTER TABLE activity_logs
+                 ADD CONSTRAINT chk_ended_after_started
+                 CHECK (ended_at IS NULL OR ended_at > started_at)'
+            );
+        }
     }
 
     public function down(): void
