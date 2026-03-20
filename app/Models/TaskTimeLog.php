@@ -15,7 +15,9 @@ class TaskTimeLog extends Model
     ];
 
     protected $casts = [
-        'worked_on' => 'date'
+        'worked_on'        => 'date',
+        'duration_minutes' => 'integer',
+        'activity_log_id'  => 'integer',
     ];
 
     public function task(){

@@ -17,10 +17,10 @@ class ActivityLog extends Model
     ];
 
     protected $casts = [
-        'started_at' => 'datetime',
-        'ended_at' => 'datetime',
+        'started_at'      => 'datetime',
+        'ended_at'        => 'datetime',
         'acknowledged_at' => 'datetime',
-        'auto_stopped'    => 'boolean'
+        'auto_stopped'    => 'boolean',
     ];
 
     public function user(){
