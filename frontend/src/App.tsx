@@ -4,6 +4,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   return (
@@ -14,7 +15,7 @@ const App = () => {
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<AppLayout />}>
-              <Route path="/"              element={<div className="p-6">Dashboard</div>} />
+              <Route path="/"              element={<Dashboard />} />
               <Route path="/projects"      element={<div className="p-6">Projects</div>} />
               <Route path="/tasks"         element={<div className="p-6">Tasks</div>} />
               <Route path="/activity-logs" element={<div className="p-6">Activity Logs</div>} />
