@@ -27,6 +27,11 @@ class ProjectStatusController extends Controller
     {
         $this->authorize('update', $project);
 
+        // statusが本当にこのprojectのものか確認
+        if ($status->project_id !== $project->id) {
+            return response()->json(['message' => 'このステータスはプロジェクトに属していません'], 403);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:100'],
         ]);

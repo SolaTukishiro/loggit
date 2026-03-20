@@ -15,9 +15,8 @@ class ProjectResource extends JsonResource
             'description'           => $this->description,
             'color'                 => $this->color,
             'due_date'              => $this->due_date?->format('Y-m-d'),
-            'task_count'            => $this->tasks()->count(),
-            'completed_task_count'  => $this->tasks()
-                ->whereHas('status', fn($q) => $q->where('order', 3))->count(),
+            'task_count'           => $this->tasks_count ?? 0,
+            'completed_task_count' => $this->completed_task_count ?? 0,
             'statuses'              => ProjectStatusResource::collection(
                 $this->whenLoaded('statuses')
             ),

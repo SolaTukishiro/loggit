@@ -29,6 +29,12 @@ class TaskController extends Controller
         ->when($request->priority,   fn($q) => $q->where('priority', $request->priority))
         ->when($request->include_deleted, fn($q) => $q->withTrashed())
         ->with(['status', 'children'])
+        ->withCount([
+            'children',
+            'children as completed_subtask_count' => fn($q) =>
+                $q->whereHas('status', fn($q) => $q->where('order', 3))
+        ])
+        ->withSum('timelogs', 'duration_minutes')
         ->get();
 
         return TaskResource::collection($tasks)->response();
@@ -41,6 +47,12 @@ class TaskController extends Controller
         $tasks = $project->tasks()
             ->when($request->status_id, fn($q) => $q->where('status_id', $request->status_id))
             ->with(['status', 'children'])
+            ->withCount([
+                'children',
+                'children as completed_subtask_count' => fn($q) =>
+                    $q->whereHas('status', fn($q) => $q->where('order', 3))
+            ])
+            ->withSum('timelogs', 'duration_minutes')
             ->get();
 
         return TaskResource::collection($tasks)->response();

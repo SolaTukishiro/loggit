@@ -38,4 +38,15 @@ class ActivityLog extends Model
     public function taskTimeLog(){
         return $this->taskTimeLogs();
     }
+
+    public function getDurationMinutesAttribute(): ?int
+    {
+        if (!$this->ended_at) return null;
+        return (int) $this->started_at->diffInMinutes($this->ended_at);
+    }
+
+    public function getIsTrackingAttribute(): bool
+    {
+        return is_null($this->ended_at);
+}
 }

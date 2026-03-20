@@ -33,9 +33,14 @@ class TaskTimeLogController extends Controller
         return (new TaskTimeLogResource($timeLog))->response()->setStatusCode(201);
     }
 
-    public function destroy(Task $task, TaskTimeLog $timeLog): Response
+    public function destroy(Task $task, TaskTimeLog $timeLog): Response|JsonResponse
     {
         $this->authorize('update', $task);
+
+        if ($timeLog->task_id !== $task->id) {
+            return response()->json(['message' => 'この時間ログはタスクに属していません'], 403);
+        }
+
         $timeLog->delete();
         return response()->noContent();
     }
