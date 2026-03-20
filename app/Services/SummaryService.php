@@ -13,14 +13,14 @@ class SummaryService
     {
         [$start, $end] = $this->getPeriodRange($period);
 
-        // 総活動時間（activity_logsベース）
+        // 総活動時間（activity_logsベース）→ UTCで比較
         $totalActivity = ActivityLog::where('user_id', $user->id)
             ->whereNotNull('ended_at')
-            ->whereBetween('started_at', [$start, $end])
+            ->whereBetween('started_at', [$start->copy()->utc(), $end->copy()->utc()])
             ->selectRaw('SUM(TIMESTAMPDIFF(MINUTE, started_at, ended_at)) as total')
             ->value('total') ?? 0;
 
-        // 総配賦時間（task_time_logsベース）
+        // 総配賦時間（task_time_logsベース）→ 日付そのまま
         $totalTracked = TaskTimeLog::whereHas('task.project', fn($q) =>
             $q->where('user_id', $user->id)
         )->whereBetween('worked_on', [$start->toDateString(), $end->toDateString()])
@@ -39,11 +39,11 @@ class SummaryService
     {
         $now = Carbon::now('Asia/Tokyo');
         if ($period === 'week') {
-            $start = $now->copy()->startOfWeek(Carbon::SUNDAY)->utc();
-            $end   = $now->copy()->endOfWeek(Carbon::SATURDAY)->utc();
+            $start = $now->copy()->startOfWeek(Carbon::SUNDAY);
+            $end   = $now->copy()->endOfWeek(Carbon::SATURDAY);
         } else {
-            $start = $now->copy()->startOfMonth()->utc();
-            $end   = $now->copy()->endOfMonth()->utc();
+            $start = $now->copy()->startOfMonth();
+            $end   = $now->copy()->endOfMonth();
         }
         return [$start, $end];
     }
