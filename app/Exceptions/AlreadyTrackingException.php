@@ -5,12 +5,12 @@ namespace App\Exceptions;
 use Illuminate\Http\JsonResponse;
 use RuntimeException;
 
-class AlreadyStoppedException extends RuntimeException
+class AlreadyTrackingException extends RuntimeException
 {
     public function render(): JsonResponse
     {
         return response()->json([
-            'message' => 'この活動ログはすでに停止されています',
+            'message' => 'すでに計測中の活動ログがあります',
             'errors'  => [],
         ], 422);
     }
