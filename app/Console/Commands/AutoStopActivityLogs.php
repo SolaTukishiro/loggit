@@ -18,7 +18,7 @@ class AutoStopActivityLogs extends Command
 
         foreach ($targets as $log) {
             $log->update([
-                'ended_at'     => $log->started_at->addHours(24),
+                'ended_at'     => $log->started_at->copy()->addHours(24),
                 'auto_stopped' => true,
             ]);
         }

@@ -53,6 +53,11 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
         $project->update($request->validated());
+        $project->loadCount([
+            'tasks',
+            'tasks as completed_task_count' => fn($q) =>
+                $q->whereHas('status', fn($q) => $q->where('order', 3))
+        ]);
         return (new ProjectResource($project->load('statuses')))->response();
     }
 

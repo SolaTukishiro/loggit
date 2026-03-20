@@ -71,13 +71,13 @@ class TaskController extends Controller
         }
 
         $task = $project->tasks()->create($data);
-        return (new TaskResource($task->load('status', 'children')))->response()->setStatusCode(201);
+        return (new TaskResource($this->loadTaskResourceData($task)))->response()->setStatusCode(201);
     }
 
     public function show(Task $task): JsonResponse
     {
         $this->authorize('view', $task);
-        return (new TaskResource($task->load('status', 'children')))->response();
+        return (new TaskResource($this->loadTaskResourceData($task)))->response();
     }
 
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
@@ -92,7 +92,7 @@ class TaskController extends Controller
         }
 
         $task->update($data);
-        return (new TaskResource($task->load('status', 'children')))->response();
+        return (new TaskResource($this->loadTaskResourceData($task)))->response();
     }
 
     public function destroy(Task $task): Response
@@ -106,6 +106,17 @@ class TaskController extends Controller
     {
         $this->authorize('restore', $task);
         $this->taskService->restoreWithChildren($task);
-        return (new TaskResource($task->fresh()))->response();
+        return (new TaskResource($this->loadTaskResourceData($task->fresh())))->response();
+    }
+
+    private function loadTaskResourceData(Task $task): Task
+    {
+        return $task->load(['status', 'children'])
+            ->loadCount([
+                'children',
+                'children as completed_subtask_count' => fn($q) =>
+                    $q->whereHas('status', fn($q) => $q->where('order', 3)),
+            ])
+            ->loadSum('timelogs', 'duration_minutes');
     }
 }
