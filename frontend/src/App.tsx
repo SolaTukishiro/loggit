@@ -9,6 +9,7 @@ import ProjectList from './pages/ProjectList';
 import ProjectDetail from './pages/ProjectDetail';
 import ActivityLog from './pages/ActivityLog';
 import TaskList from './pages/TaskList';
+import Settings from './pages/Settings';
 
 const App = () => {
   return (
@@ -24,7 +25,7 @@ const App = () => {
               <Route path="/projects/:id"  element={<ProjectDetail />} />
               <Route path="/tasks"         element={<TaskList />} />
               <Route path="/activity-logs" element={<ActivityLog />} />
-              <Route path="/settings"      element={<div className="p-6">Settings</div>} />
+              <Route path="/settings"      element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

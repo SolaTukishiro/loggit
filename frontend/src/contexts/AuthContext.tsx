@@ -13,13 +13,17 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser]   = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [user, setUser]   = useState<User | null>(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const login = async (email: string, password: string) => {
     const res = await client.post('/login', { email, password });
     const { token, user } = res.data.data;
     localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
     setToken(token);
     setUser(user);
   };
@@ -27,6 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     await client.post('/logout');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
     setUser(null);
   };

@@ -1,4 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const navItems = [
@@ -42,13 +43,21 @@ const navItems = [
 ];
 
 const Sidebar = () => {
-  const { pathname } = useLocation();
-  const { user, logout } = useAuth();
+  const { pathname }             = useLocation();
+  const { user, logout }         = useAuth();
+  const navigate                 = useNavigate();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const handleLogout = async () => {
+    setShowUserMenu(false);
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen flex-shrink-0 shadow-sm">
       {/* ロゴ */}
-      <div className="h-14 px-4 py-3 border-b border-gray-200 flex items-center gap-2.5">
+      <div className="h-14 px-4 border-b border-gray-200 flex items-center gap-2.5">
         <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
           Lg
         </div>
@@ -99,22 +108,46 @@ const Sidebar = () => {
       </nav>
 
       {/* ユーザー情報 */}
-      <div className="p-2 border-t border-gray-200">
-        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded hover:bg-gray-50 cursor-pointer">
+      <div className="p-2 border-t border-gray-200 relative">
+        <div
+          className="flex items-center gap-2.5 px-2.5 py-2 rounded hover:bg-gray-50 cursor-pointer"
+          onClick={() => setShowUserMenu((prev) => !prev)}
+        >
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-            {user?.name?.charAt(0) ?? 'U'}
+            {user?.name?.charAt(0).toUpperCase() ?? 'U'}
           </div>
           <span className="text-sm text-gray-600 font-medium truncate">{user?.name}</span>
         </div>
-        <button
-          onClick={logout}
-          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-          </svg>
-          ログアウト
-        </button>
+
+        {/* ポップアップメニュー */}
+        {showUserMenu && (
+          <div className="absolute bottom-14 left-2 right-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
+            <div className="px-4 py-3 border-b border-gray-100">
+              <div className="text-sm font-semibold text-gray-800">{user?.name}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{user?.email}</div>
+            </div>
+            <Link
+              to="/settings"
+              onClick={() => setShowUserMenu(false)}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+              </svg>
+              設定
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+              </svg>
+              ログアウト
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );
