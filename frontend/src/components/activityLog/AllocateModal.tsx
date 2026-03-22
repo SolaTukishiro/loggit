@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { fetchProjects } from '../../api/projects';
 import { fetchProjectTasks } from '../../api/tasks';
 import { createTimeLog } from '../../api/timeLogs';
@@ -37,9 +38,22 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedProject) return;
+    if (!selectedProject) {
+      setTasks([]);
+      return;
+    }
+
     fetchProjectTasks(selectedProject).then(setTasks);
   }, [selectedProject]);
+
+  useEffect(() => {
+    const validTaskIds = new Set(tasks.map((task) => task.id));
+    setAllocations((prev) => prev.map((allocation) => (
+      allocation.task_id && !validTaskIds.has(allocation.task_id)
+        ? { ...allocation, task_id: null }
+        : allocation
+    )));
+  }, [tasks]);
 
   const addRow = () => {
     setAllocations((prev) => [...prev, { task_id: null, duration_minutes: 0, note: '' }]);
@@ -53,6 +67,13 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
     setAllocations((prev) => prev.map((a, i) => i === index ? { ...a, [field]: value } : a));
   };
 
+  const handleProjectChange = (value: string) => {
+    const projectId = Number(value) || null;
+    setSelectedProject(projectId);
+    setTasks([]);
+    setAllocations((prev) => prev.map((allocation) => ({ ...allocation, task_id: null })));
+  };
+
   const handleSave = async () => {
     const valid = allocations.filter((a) => a.task_id && a.duration_minutes > 0);
     if (valid.length === 0) { onClose(); return; }
@@ -62,6 +83,7 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
         createTimeLog(a.task_id!, {
           duration_minutes: a.duration_minutes,
           activity_log_id: activityLog.id,
+          worked_on: dayjs(activityLog.started_at).format('YYYY-MM-DD'),
           note: a.note || undefined,
         })
       ));
@@ -99,7 +121,7 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
           <label className="block text-sm font-medium text-gray-700 mb-1">プロジェクト</label>
           <select
             value={selectedProject ?? ''}
-            onChange={(e) => { setSelectedProject(Number(e.target.value)); setTasks([]); }}
+            onChange={(e) => handleProjectChange(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           >
             <option value="">選択してください</option>
