@@ -19,3 +19,8 @@ export const updateProject = async (id: number, data: Partial<Project>): Promise
 export const deleteProject = async (id: number): Promise<void> => {
   await client.delete(`/projects/${id}`);
 };
+
+export const fetchProject = async (id: number): Promise<Project> => {
+  const res = await client.get(`/projects/${id}`);
+  return res.data.data;
+};

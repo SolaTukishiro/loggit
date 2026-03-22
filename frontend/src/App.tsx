@@ -5,6 +5,8 @@ import AppLayout from './components/layout/AppLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ProjectList from './pages/ProjectList';
+import ProjectDetail from './pages/ProjectDetail';
 
 const App = () => {
   return (
@@ -16,7 +18,8 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route element={<AppLayout />}>
               <Route path="/"              element={<Dashboard />} />
-              <Route path="/projects"      element={<div className="p-6">Projects</div>} />
+              <Route path="/projects"      element={<ProjectList />} />
+              <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/tasks"         element={<div className="p-6">Tasks</div>} />
               <Route path="/activity-logs" element={<div className="p-6">Activity Logs</div>} />
               <Route path="/settings"      element={<div className="p-6">Settings</div>} />

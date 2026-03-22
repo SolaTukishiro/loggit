@@ -8,6 +8,7 @@ export type Task = {
   project_id: number;
   project_name: string;
   parent_task_id: number | null;
+  status_id: number;
   status: ProjectStatus;
   title: string;
   description: string | null;
