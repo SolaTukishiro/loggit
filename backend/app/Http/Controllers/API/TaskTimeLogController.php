@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskTimeLog\StoreTaskTimeLogRequest;
 use App\Http\Resources\TaskTimeLogResource;
+use App\Models\ActivityLog;
 use App\Models\Task;
 use App\Models\TaskTimeLog;
 use Illuminate\Http\JsonResponse;
@@ -24,9 +25,16 @@ class TaskTimeLogController extends Controller
         $this->authorize('update', $task);
         $data = $request->validated();
 
-        // worked_onが未指定の場合は今日の日付をセット
         if (!isset($data['worked_on'])) {
-            $data['worked_on'] = now('Asia/Tokyo')->toDateString();
+            $workedOn = null;
+
+            if (!empty($data['activity_log_id'])) {
+                $activityLog = ActivityLog::query()->find($data['activity_log_id']);
+                $workedOn = $activityLog?->started_at?->timezone('Asia/Tokyo')->toDateString();
+            }
+
+            // activity_log_id 経由で導けない場合のみ今日の日付を使う
+            $data['worked_on'] = $workedOn ?? now('Asia/Tokyo')->toDateString();
         }
 
         $timeLog = $task->timelogs()->create($data);

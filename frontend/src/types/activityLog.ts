@@ -9,6 +9,7 @@ export type ActivityLog = {
   duration_minutes: number | null;
   note: string | null;
   auto_stopped: boolean;
+  acknowledged_at: string | null;
   is_tracking: boolean;
   task_time_logs: TaskTimeLog[];
 };
