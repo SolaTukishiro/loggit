@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ProjectList from './pages/ProjectList';
 import ProjectDetail from './pages/ProjectDetail';
 import ActivityLog from './pages/ActivityLog';
+import TaskList from './pages/TaskList';
 
 const App = () => {
   return (
@@ -21,7 +22,7 @@ const App = () => {
               <Route path="/"              element={<Dashboard />} />
               <Route path="/projects"      element={<ProjectList />} />
               <Route path="/projects/:id"  element={<ProjectDetail />} />
-              <Route path="/tasks"         element={<div className="p-6">Tasks</div>} />
+              <Route path="/tasks"         element={<TaskList />} />
               <Route path="/activity-logs" element={<ActivityLog />} />
               <Route path="/settings"      element={<div className="p-6">Settings</div>} />
             </Route>
