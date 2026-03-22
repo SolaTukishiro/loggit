@@ -20,8 +20,11 @@ const TaskList = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('削除しますか？')) return;
     await deleteTask(id);
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-  };
+    // 削除後にAPIから再取得（子タスクも含めて正しく反映）
+    const params: Record<string, string> = {};
+    if (filterPriority) params.priority = filterPriority;
+    fetchTasks(params).then(setTasks);
+    };
 
   const priorityColors: Record<number, string> = {
     1: 'bg-gray-100 text-gray-400',
