@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchProject } from '../api/projects';
 import { fetchProjectTasks, createTask, updateTask, deleteTask } from '../api/tasks';
 import type { Project, ProjectStatus } from '../types/project';
 import type { Task } from '../types/task';
 
 const ProjectDetail = () => {
+  const navigate                        = useNavigate();
   const { id }                          = useParams<{ id: string }>();
   const [project, setProject]           = useState<Project | null>(null);
   const [tasks, setTasks]               = useState<Task[]>([]);
@@ -14,12 +16,66 @@ const ProjectDetail = () => {
   const [title, setTitle]               = useState('');
   const [priority, setPriority]         = useState<1 | 2 | 3>(1);
   const [loading, setLoading]           = useState(false);
+  const [loadingProject, setLoadingProject] = useState(true);
+  const [error, setError]               = useState<string | null>(null);
+  const [isNotFound, setIsNotFound]     = useState(false);
+  const [retryKey, setRetryKey]         = useState(0);
+  const projectId                       = Number(id);
 
   useEffect(() => {
-    if (!id) return;
-    fetchProject(Number(id)).then(setProject);
-    fetchProjectTasks(Number(id)).then(setTasks);
-  }, [id]);
+    let active = true;
+
+    if (!id || Number.isNaN(projectId)) {
+      setProject(null);
+      setTasks([]);
+      setLoadingProject(false);
+      setIsNotFound(true);
+      setError('プロジェクトが見つかりません。');
+      return;
+    }
+
+    const loadProject = async () => {
+      setLoadingProject(true);
+      setError(null);
+      setIsNotFound(false);
+      setProject(null);
+      setTasks([]);
+
+      try {
+        const [projectData, taskData] = await Promise.all([
+          fetchProject(projectId),
+          fetchProjectTasks(projectId),
+        ]);
+
+        if (!active) return;
+        setProject(projectData);
+        setTasks(taskData);
+      } catch (err) {
+        if (!active) return;
+
+        const status = axios.isAxiosError(err) ? err.response?.status : undefined;
+        setProject(null);
+        setTasks([]);
+
+        if (status === 403 || status === 404) {
+          setIsNotFound(true);
+          setError('このプロジェクトは表示できません。削除されたか、アクセス権がありません。');
+        } else {
+          setError('プロジェクトの読み込みに失敗しました。ネットワークを確認して再試行してください。');
+        }
+      } finally {
+        if (active) {
+          setLoadingProject(false);
+        }
+      }
+    };
+
+    void loadProject();
+
+    return () => {
+      active = false;
+    };
+  }, [id, projectId, retryKey]);
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +113,42 @@ const ProjectDetail = () => {
     3: 'bg-red-50 text-red-500',
   };
 
-  if (!project) return <div className="p-6 text-gray-400">読み込み中...</div>;
+  if (loadingProject) {
+    return <div className="p-6 text-gray-400">読み込み中...</div>;
+  }
+
+  if (error || !project) {
+    return (
+      <div className="p-6">
+        <div className="max-w-lg rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-gray-800">
+            {isNotFound ? 'プロジェクトが見つかりません' : 'プロジェクトを読み込めませんでした'}
+          </h2>
+          <p className="mt-2 text-sm text-gray-500">
+            {error ?? 'プロジェクトの表示に失敗しました。'}
+          </p>
+          <div className="mt-4 flex gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/projects')}
+              className="rounded border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              プロジェクト一覧へ戻る
+            </button>
+            {!isNotFound && (
+              <button
+                type="button"
+                onClick={() => setRetryKey((current) => current + 1)}
+                className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              >
+                再試行
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 flex flex-col gap-4 h-full">
