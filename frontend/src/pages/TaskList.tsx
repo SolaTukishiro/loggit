@@ -25,9 +25,11 @@ const TaskList = () => {
 
   const sorted = [...tasks].sort((a, b) => {
     if (sortBy === 'due_date_asc') {
+      if (!a.due_date && !b.due_date) return b.id - a.id;
       if (!a.due_date) return 1;
       if (!b.due_date) return -1;
-      return dayjs(a.due_date).diff(dayjs(b.due_date));
+      const diff = dayjs(a.due_date).diff(dayjs(b.due_date));
+      return diff !== 0 ? diff : b.id - a.id;
     }
     if (sortBy === 'priority_desc') return b.priority - a.priority;
     return b.id - a.id;
