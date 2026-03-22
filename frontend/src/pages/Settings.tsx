@@ -5,7 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import dayjs from 'dayjs';
 
 const Settings = () => {
-  const { user }          = useAuth();
+  const { user, updateUser } = useAuth();
   const { showToast }     = useToast();
 
   const [name, setName]             = useState('');
@@ -15,6 +15,7 @@ const Settings = () => {
   const [enableTracking, setEnableTracking]   = useState(true);
   const [loadingProfile, setLoadingProfile]   = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
+  const [loadingTracking, setLoadingTracking] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -30,7 +31,8 @@ const Settings = () => {
     e.preventDefault();
     setLoadingProfile(true);
     try {
-      await client.put('/user', { name, email });
+      const res = await client.put('/user', { name, email });
+      updateUser(res.data.data);
       showToast('プロフィールを更新しました', 'success');
     } catch {
       showToast('更新に失敗しました', 'error');
@@ -58,9 +60,18 @@ const Settings = () => {
   };
 
   const handleTrackingToggle = async (value: boolean) => {
+    const previousValue = enableTracking;
     setEnableTracking(value);
-    await client.put('/settings', { enable_task_time_tracking: value });
-    showToast('設定を保存しました', 'success');
+    setLoadingTracking(true);
+    try {
+      await client.put('/settings', { enable_task_time_tracking: value });
+      showToast('設定を保存しました', 'success');
+    } catch {
+      setEnableTracking(previousValue);
+      showToast('設定の保存に失敗しました', 'error');
+    } finally {
+      setLoadingTracking(false);
+    }
   };
 
   return (
@@ -172,7 +183,8 @@ const Settings = () => {
           </div>
           <button
             onClick={() => handleTrackingToggle(!enableTracking)}
-            className={`w-10 h-6 rounded-full transition-colors relative ${enableTracking ? 'bg-blue-600' : 'bg-gray-300'}`}
+            disabled={loadingTracking}
+            className={`w-10 h-6 rounded-full transition-colors relative disabled:opacity-50 ${enableTracking ? 'bg-blue-600' : 'bg-gray-300'}`}
           >
             <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${enableTracking ? 'translate-x-5' : 'translate-x-1'}`} />
           </button>
