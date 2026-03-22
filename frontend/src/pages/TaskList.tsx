@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchTasks } from '../api/tasks';
+import { fetchTasks, deleteTask } from '../api/tasks';
 import type { Task } from '../types/task';
 import { formatMinutes } from '../utils/formatTime';
 import dayjs from 'dayjs';
@@ -16,6 +16,15 @@ const TaskList = () => {
     setLoading(true);
     fetchTasks(params).then(setTasks).finally(() => setLoading(false));
   }, [filterPriority]);
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('削除しますか？')) return;
+    await deleteTask(id);
+    // 削除後にAPIから再取得（子タスクも含めて正しく反映）
+    const params: Record<string, string> = {};
+    if (filterPriority) params.priority = filterPriority;
+    fetchTasks(params).then(setTasks);
+    };
 
   const priorityColors: Record<number, string> = {
     1: 'bg-gray-100 text-gray-400',
@@ -100,6 +109,14 @@ const TaskList = () => {
                   {task.completed_subtask_count}/{task.subtask_count}
                 </span>
               )}
+              <button
+                onClick={() => handleDelete(task.id)}
+                className="text-gray-300 hover:text-red-400 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                </svg>
+              </button>
             </div>
           </div>
         ))}
