@@ -24,7 +24,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchProjects().then(setProjects);
-    fetchTasks({ due_date: dayjs().format('YYYY-MM-DD') }).then(setDueTasks);
+    fetchTasks({ due_date: dayjs().format('YYYY-MM-DD') }).then((tasks) => {
+      // Doneステータス（order:3）以外のタスクだけ表示
+      setDueTasks(tasks.filter((t) => t.status.order !== 3));
+    });
   }, []);
 
   return (

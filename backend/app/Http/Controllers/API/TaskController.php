@@ -24,16 +24,13 @@ class TaskController extends Controller
         $tasks = Task::whereHas('project', fn($q) =>
             $q->where('user_id', auth()->id())
         )
-        ->when($request->project_id, fn($q) => $q->where('project_id', $request->project_id))
-        ->when($request->status_id,  fn($q) => $q->where('status_id', $request->status_id))
-        ->when($request->priority,   fn($q) => $q->where('priority', $request->priority))
+        ->when($request->project_id,      fn($q) => $q->where('project_id', $request->project_id))
+        ->when($request->status_id,       fn($q) => $q->where('status_id', $request->status_id))
+        ->when($request->priority,        fn($q) => $q->where('priority', $request->priority))
+        ->when($request->due_date,        fn($q) => $q->where('due_date', $request->due_date))
         ->when($request->include_deleted, fn($q) => $q->withTrashed())
         ->with(['status', 'children'])
-        ->withCount([
-            'children',
-            'children as completed_subtask_count' => fn($q) =>
-                $q->whereHas('status', fn($q) => $q->where('order', 3))
-        ])
+        ->withCount(['children','children as completed_subtask_count' => fn($q) => $q->whereHas('status', fn($q) => $q->where('order', 3))])
         ->withSum('timelogs', 'duration_minutes')
         ->get();
 
