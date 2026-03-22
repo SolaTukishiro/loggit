@@ -6,6 +6,11 @@ export const fetchTasks = async (params?: Record<string, string>): Promise<Task[
   return res.data.data;
 };
 
+export const fetchProjectTasks = async (projectId: number, params?: Record<string, string>): Promise<Task[]> => {
+  const res = await client.get(`/projects/${projectId}/tasks`, { params });
+  return res.data.data;
+};
+
 export const fetchTask = async (id: number): Promise<Task> => {
   const res = await client.get(`/tasks/${id}`);
   return res.data.data;
