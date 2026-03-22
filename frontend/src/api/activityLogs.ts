@@ -23,3 +23,12 @@ export const stopTracking = async (id: number): Promise<ActivityLog> => {
   const res = await client.post(`/activity-logs/${id}/stop`);
   return res.data.data;
 };
+
+export const acknowledgeLog = async (id: number): Promise<ActivityLog> => {
+  const res = await client.post(`/activity-logs/${id}/acknowledge`);
+  return res.data.data;
+};
+
+export const deleteActivityLog = async (id: number): Promise<void> => {
+  await client.delete(`/activity-logs/${id}`);
+};
