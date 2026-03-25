@@ -75,7 +75,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="p-6 max-w-2xl flex flex-col gap-6">
+    <div className="flex max-w-2xl flex-col gap-6 p-4 sm:p-6">
       <h2 className="text-base font-semibold text-gray-800">設定</h2>
 
     {/* アカウント情報 */}
@@ -83,7 +83,7 @@ const Settings = () => {
     <div className="px-4 py-3 border-b border-gray-200">
         <div className="text-sm font-semibold text-gray-800">アカウント情報</div>
     </div>
-    <div className="p-4 flex items-center gap-4">
+    <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-lg font-bold flex-shrink-0">
         {user?.name?.charAt(0).toUpperCase() ?? 'U'}
         </div>
@@ -176,7 +176,7 @@ const Settings = () => {
         <div className="px-4 py-3 border-b border-gray-200">
           <div className="text-sm font-semibold text-gray-800">トラッキング設定</div>
         </div>
-        <div className="p-4 flex items-center justify-between">
+        <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-sm text-gray-800">タスク時間配賦機能</div>
             <div className="text-xs text-gray-400 mt-0.5">停止後に配賦モーダルを表示する</div>

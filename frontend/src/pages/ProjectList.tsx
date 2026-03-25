@@ -40,12 +40,12 @@ const ProjectList = () => {
   const colors = ['#0052CC', '#6554C0', '#00875A', '#FF8B00', '#DE350B', '#00B8D9'];
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-base font-semibold text-gray-800">プロジェクト一覧</h2>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+          className="flex w-full items-center justify-center gap-1.5 rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors sm:w-auto"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
           新しいプロジェクト
@@ -53,7 +53,7 @@ const ProjectList = () => {
       </div>
 
       {/* プロジェクト一覧 */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {projects.map((project) => (
           <div
             key={project.id}
@@ -99,8 +99,8 @@ const ProjectList = () => {
 
       {/* 新規作成モーダル */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-5 shadow-xl sm:p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-4">新しいプロジェクト</h3>
             <form onSubmit={handleCreate} className="flex flex-col gap-4">
               <div>
@@ -124,7 +124,7 @@ const ProjectList = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">カラー</label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {colors.map((c) => (
                     <button
                       key={c}
@@ -136,7 +136,7 @@ const ProjectList = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}

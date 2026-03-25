@@ -22,7 +22,7 @@ const WeeklyChart = ({ data, period, onChangePeriod }: Props) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-3">
         <div className="text-sm font-semibold text-gray-800">
           {period === 'week' ? '週次' : '月次'} 活動時間
         </div>
@@ -44,7 +44,7 @@ const WeeklyChart = ({ data, period, onChangePeriod }: Props) => {
       </div>
       <div className="p-4">
         <p className="text-xs text-gray-400 mb-3">※ 開始日基準 / 日曜始まり</p>
-        <ResponsiveContainer width="100%" height={100}>
+        <ResponsiveContainer width="100%" height={140}>
           <BarChart data={data} barCategoryGap="20%">
             <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
             <YAxis hide />

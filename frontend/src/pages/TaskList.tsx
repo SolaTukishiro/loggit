@@ -45,11 +45,11 @@ const TaskList = () => {
   });
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <h2 className="text-base font-semibold text-gray-800 mb-4">タスク一覧</h2>
 
       {/* フィルターバー */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <select
           value={filterPriority}
           onChange={(e) => setFilterPriority(e.target.value)}
@@ -80,15 +80,15 @@ const TaskList = () => {
           <div className="p-8 text-center text-gray-400 text-sm">タスクがありません</div>
         )}
         {!loading && sorted.map((task) => (
-          <div key={task.id} className="flex items-center gap-4 px-4 py-3 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors">
+          <div key={task.id} className="flex flex-col gap-3 border-b border-gray-100 px-4 py-3 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-800">{task.title}</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="break-words text-sm text-gray-800">{task.title}</span>
                 <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${priorityColors[task.priority]}`}>
                   {task.priority_label}
                 </span>
               </div>
-              <div className="flex items-center gap-3 mt-0.5">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="text-xs text-gray-400">{task.project_name}</span>
                 <span className="text-xs text-gray-400">{task.status.name}</span>
                 {task.due_date && (
@@ -98,7 +98,7 @@ const TaskList = () => {
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex flex-wrap items-center gap-3 sm:flex-shrink-0">
               {task.total_tracked_minutes > 0 && (
                 <span className="text-xs font-mono text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
                   {formatMinutes(task.total_tracked_minutes)}

@@ -94,9 +94,9 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+      <div className="max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-lg bg-white p-5 shadow-xl sm:p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <h3 className="text-base font-semibold text-gray-800">時間を配賦する</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -106,7 +106,7 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
         </div>
 
         {/* 活動時間サマリー */}
-        <div className="bg-gray-50 rounded-lg px-4 py-3 mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-col gap-2 rounded-lg bg-gray-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm text-gray-600">
             総活動時間：<span className="font-mono font-semibold text-gray-800">{formatMinutes(activityMinutes)}</span>
           </div>
@@ -134,11 +134,11 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
         {/* 配賦行 */}
         <div className="flex flex-col gap-2 mb-4">
           {allocations.map((alloc, i) => (
-            <div key={i} className="flex gap-2 items-center">
+            <div key={i} className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_80px_minmax(0,140px)_auto] sm:items-center">
               <select
                 value={alloc.task_id ?? ''}
                 onChange={(e) => updateRow(i, 'task_id', Number(e.target.value) || null)}
-                className="flex-1 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
+                className="min-w-0 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
               >
                 <option value="">タスクを選択</option>
                 {tasks.map((t) => (
@@ -151,17 +151,17 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
                 value={alloc.duration_minutes || ''}
                 onChange={(e) => updateRow(i, 'duration_minutes', Number(e.target.value))}
                 placeholder="分"
-                className="w-16 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
               />
               <input
                 type="text"
                 value={alloc.note}
                 onChange={(e) => updateRow(i, 'note', e.target.value)}
                 placeholder="メモ"
-                className="w-28 border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-blue-500"
               />
               {allocations.length > 1 && (
-                <button onClick={() => removeRow(i)} className="text-gray-300 hover:text-red-400">
+                <button onClick={() => removeRow(i)} className="justify-self-end text-gray-300 hover:text-red-400">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M18 6L6 18M6 6l12 12"/>
                   </svg>
@@ -182,7 +182,7 @@ const AllocateModal = ({ activityLog, onClose, onSaved }: Props) => {
           <p className="text-xs text-red-500 mb-3">配賦時間が総活動時間を超えています。このまま保存できますが確認してください。</p>
         )}
 
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50"

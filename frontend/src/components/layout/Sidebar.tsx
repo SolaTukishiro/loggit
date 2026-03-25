@@ -42,7 +42,12 @@ const navItems = [
   },
 ];
 
-const Sidebar = () => {
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const Sidebar = ({ isOpen, onClose }: Props) => {
   const { pathname }             = useLocation();
   const { user, logout }         = useAuth();
   const navigate                 = useNavigate();
@@ -50,18 +55,40 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     setShowUserMenu(false);
+    onClose();
     await logout();
     navigate('/login');
   };
 
   return (
-    <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen flex-shrink-0 shadow-sm">
+    <>
+      <div
+        className={`fixed inset-0 z-30 bg-slate-900/40 transition-opacity lg:hidden ${
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={onClose}
+      />
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex h-screen w-72 max-w-[85vw] flex-col border-r border-gray-200 bg-white shadow-sm transition-transform lg:static lg:z-auto lg:w-60 lg:max-w-none lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
       {/* ロゴ */}
-      <div className="h-14 px-4 border-b border-gray-200 flex items-center gap-2.5">
+      <div className="flex h-14 items-center gap-2.5 border-b border-gray-200 px-4">
         <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
           Lg
         </div>
         <span className="text-base font-bold text-gray-800 tracking-tight">Loggit</span>
+        <button
+          type="button"
+          onClick={onClose}
+          className="ml-auto rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
+          aria-label="メニューを閉じる"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
 
       {/* ナビ */}
@@ -73,6 +100,7 @@ const Sidebar = () => {
           <Link
             key={item.path}
             to={item.path}
+            onClick={onClose}
             className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded text-sm transition-colors ${
               pathname === item.path
                 ? 'bg-blue-50 text-blue-600 font-medium'
@@ -91,6 +119,7 @@ const Sidebar = () => {
         </div>
         <Link
           to="/settings"
+          onClick={onClose}
           className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded text-sm transition-colors ${
             pathname === '/settings'
               ? 'bg-blue-50 text-blue-600 font-medium'
@@ -149,7 +178,8 @@ const Sidebar = () => {
           </div>
         )}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

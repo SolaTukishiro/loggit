@@ -25,7 +25,7 @@ const ActivityLog = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       <h2 className="text-base font-semibold text-gray-800 mb-6">活動ログ</h2>
 
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
@@ -33,14 +33,14 @@ const ActivityLog = () => {
           <div className="p-8 text-center text-gray-400 text-sm">活動ログがありません</div>
         )}
         {logs.map((log) => (
-          <div key={log.id} className="flex items-center gap-4 px-4 py-3 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors">
+          <div key={log.id} className="flex flex-col gap-3 border-b border-gray-100 px-4 py-3 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center">
 
             {/* 状態インジケーター */}
             <div className={`w-2 h-2 rounded-full flex-shrink-0 ${log.is_tracking ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
 
             {/* メイン情報 */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-gray-800">
                   {log.note ?? log.project_name ?? '活動ログ'}
                 </span>
@@ -53,7 +53,7 @@ const ActivityLog = () => {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 mt-0.5">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="text-xs text-gray-400 font-mono">
                   {dayjs(log.started_at).format('MM/DD HH:mm')}
                   {log.ended_at && ` 〜 ${dayjs(log.ended_at).format('HH:mm')}`}
@@ -69,7 +69,7 @@ const ActivityLog = () => {
             </div>
 
             {/* アクション */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
               {log.auto_stopped && !log.acknowledged_at && (
                 <button
                   onClick={() => handleAcknowledge(log)}
