@@ -114,12 +114,12 @@ const ProjectDetail = () => {
   };
 
   if (loadingProject) {
-    return <div className="p-6 text-gray-400">読み込み中...</div>;
+    return <div className="p-4 text-gray-400 sm:p-6">読み込み中...</div>;
   }
 
   if (error || !project) {
     return (
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="max-w-lg rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="text-base font-semibold text-gray-800">
             {isNotFound ? 'プロジェクトが見つかりません' : 'プロジェクトを読み込めませんでした'}
@@ -127,7 +127,7 @@ const ProjectDetail = () => {
           <p className="mt-2 text-sm text-gray-500">
             {error ?? 'プロジェクトの表示に失敗しました。'}
           </p>
-          <div className="mt-4 flex gap-3">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
               onClick={() => navigate('/projects')}
@@ -151,15 +151,15 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className="p-6 flex flex-col gap-4 h-full">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className="flex h-full flex-col gap-4 p-4 sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-2">
           <div className="w-3 h-3 rounded-sm" style={{ background: project.color ?? '#0052CC' }} />
-          <h2 className="text-base font-semibold text-gray-800">{project.name}</h2>
+          <h2 className="truncate text-base font-semibold text-gray-800">{project.name}</h2>
         </div>
         <button
           onClick={() => { setShowForm(true); setFormStatus(project.statuses[0]?.id ?? null); }}
-          className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-medium px-3 py-1.5 rounded hover:bg-blue-700 transition-colors"
+          className="flex w-full items-center justify-center gap-1.5 rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors sm:w-auto"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
           タスクを追加
@@ -167,13 +167,13 @@ const ProjectDetail = () => {
       </div>
 
       {/* カンバンボード */}
-      <div className="flex gap-4 overflow-x-auto pb-4 flex-1">
+      <div className="flex flex-1 gap-4 overflow-x-auto pb-4">
         {project.statuses.map((status: ProjectStatus) => {
           const columnTasks = tasks.filter((t) => t.status.id === status.id);
           return (
-            <div key={status.id} className="flex-shrink-0 w-72">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
+            <div key={status.id} className="w-[85vw] max-w-sm flex-shrink-0 sm:w-72">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
                   <span className="text-sm font-semibold text-gray-700">{status.name}</span>
                   <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full font-mono">
                     {columnTasks.length}
@@ -188,9 +188,9 @@ const ProjectDetail = () => {
               </div>
               <div className="flex flex-col gap-2">
                 {columnTasks.map((task) => (
-                  <div key={task.id} className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                  <div key={task.id} className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm text-gray-800 flex-1">{task.title}</span>
+                      <span className="flex-1 break-words text-sm text-gray-800">{task.title}</span>
                       <button
                         onClick={() => handleDelete(task.id)}
                         className="text-gray-200 hover:text-red-400 transition-colors flex-shrink-0"
@@ -225,8 +225,8 @@ const ProjectDetail = () => {
 
       {/* タスク作成モーダル */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-5 shadow-xl sm:p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-4">タスクを追加</h3>
             <form onSubmit={handleCreateTask} className="flex flex-col gap-4">
               <div>
@@ -263,7 +263,7 @@ const ProjectDetail = () => {
                   <option value={3}>high</option>
                 </select>
               </div>
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}

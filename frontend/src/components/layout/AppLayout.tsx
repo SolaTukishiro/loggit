@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from './Sidebar';
@@ -15,16 +16,20 @@ const pageTitles: Record<string, string> = {
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
   const { pathname }        = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
-      <Sidebar />
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <Topbar title={pageTitles[pathname] ?? 'Loggit'} />
+    <div className="flex min-h-screen bg-gray-100 lg:h-screen lg:overflow-hidden">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <Topbar
+          title={pageTitles[pathname] ?? 'Loggit'}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+        />
         <div className="flex-1 overflow-y-auto">
           <Outlet />
         </div>

@@ -23,11 +23,11 @@ const ProjectProgress = ({ projects }: Props) => {
           const percent  = total > 0 ? Math.round((done / total) * 100) : 0;
 
           return (
-            <div key={project.id} className="py-2.5 border-b border-gray-100 last:border-none">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
+            <div key={project.id} className="border-b border-gray-100 py-2.5 last:border-none">
+              <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
                   <div className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: color }} />
-                  <span className="text-sm font-medium text-gray-800">{project.name}</span>
+                  <span className="truncate text-sm font-medium text-gray-800">{project.name}</span>
                 </div>
                 <span className="text-xs text-gray-400 font-mono">{done} / {total} タスク</span>
               </div>

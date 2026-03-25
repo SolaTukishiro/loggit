@@ -25,8 +25,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 sm:p-6">
+      <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow sm:p-8">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">Lg</div>
           <span className="text-lg font-bold text-gray-800">Loggit</span>
